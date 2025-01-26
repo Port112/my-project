@@ -34,7 +34,7 @@ jobs:
           echo "labels=$labels_json" >> $GITHUB_ENV
 
           # Convert components to JSON array of objects
-          components_input="${{ inputs.components }}"
+          components_input="${{ inputs.component }}"
           components_json=$(echo "$components_input" | awk -F',' '{printf "["; for (i=1; i<=NF; i++) if ($i != "") printf "{\"name\":\"%s\"}%s", $i, (i==NF ? "" : ","); printf "]"}')
           echo "components=$components_json" >> $GITHUB_ENV
 
