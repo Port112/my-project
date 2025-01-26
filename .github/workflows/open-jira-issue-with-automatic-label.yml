@@ -11,6 +11,9 @@ on:
       description:
         required: true
         type: string
+      component:
+        required: true
+        type: string  
 
 jobs:
   create-entity-in-port-and-update-run:
@@ -41,10 +44,16 @@ jobs:
           issuetype: Bug
           summary: ${{ inputs.short_title }}
           fields: |
-            ${{ fromJson(inputs.port_context).entity != null
-              && format('{{ "labels": ["port-{0}"] }}', fromJson(inputs.port_context).entity)
-              || '{}'
-            }}  
+            {{
+              "labels": ${{ fromJson(inputs.component) != null
+                && format('["port-{0}"]', fromJson(inputs.component))
+                || '[]'
+              }},
+              "components": ${{ fromJson(inputs.component) != null
+                && format('[{ "name": "{0}" }]', fromJson(inputs.component))
+                || '[]'
+              }}
+            }}     
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
