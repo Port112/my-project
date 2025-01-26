@@ -44,6 +44,11 @@ jobs:
             ${{ inputs.description }}
 
             Reported by: ${{ fromJson(inputs.port_context).user_first_name }} ${{ fromJson(inputs.port_context).user_last_name }}
+          fields: |
+            ${{ fromJson(inputs.port_context).entity != null
+              && format('{{ "labels": ["port-{0}"] }}', fromJson(inputs.port_context).entity)
+              || '{}'
+            }}   
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
