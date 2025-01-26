@@ -13,8 +13,11 @@ on:
         type: string
       component:
         required: true
-        type: string  
-
+        type: string
+      issue_type:
+        required: true
+        type: string
+        
 jobs:
   create-entity-in-port-and-update-run:
     runs-on: ubuntu-latest
@@ -59,7 +62,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: PORT
-          issuetype: Bug
+          issuetype: ${{ inputs.issue_type }}
           summary: ${{ inputs.short_title }}
           fields: |
             {
