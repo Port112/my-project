@@ -44,16 +44,10 @@ jobs:
           issuetype: Bug
           summary: ${{ inputs.short_title }}
           fields: |
-            {{
-              "labels": ${{ fromJson(inputs.component) != null
-                && format('["port-{0}"]', fromJson(inputs.component))
-                || '[]'
-              }},
-              "components": ${{ fromJson(inputs.component) != null
-                && format('[{ "name": "{0}" }]', fromJson(inputs.component))
-                || '[]'
-              }}
-            }}     
+            ${{ fromJson(inputs.component) != null
+              && format('{{ "labels": ["port-{0}"] }, {"component" :[{0}]}}', fromJson(inputs.component))
+              || '{}'
+            }}    
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
