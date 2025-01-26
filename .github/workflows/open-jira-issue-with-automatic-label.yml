@@ -37,18 +37,14 @@ jobs:
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          project: PORT
-          issuetype: Bug
-          summary:  Bug | ${{ inputs.short_title }}
-          description: |
-            ${{ inputs.description }}
-
-            Reported by: ${{ fromJson(inputs.port_context).user_first_name }} ${{ fromJson(inputs.port_context).user_last_name }}
+          project: ${{ inputs.project }}
+          issuetype: ${{ inputs.type }}
+          summary: ${{ inputs.title }}
           fields: |
             ${{ fromJson(inputs.port_context).entity != null
               && format('{{ "labels": ["port-{0}"] }}', fromJson(inputs.port_context).entity)
               || '{}'
-            }}   
+            }}  
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
