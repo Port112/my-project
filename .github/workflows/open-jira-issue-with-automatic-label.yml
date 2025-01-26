@@ -32,12 +32,12 @@ jobs:
       - name: Transform Inputs to JSON
         id: transform
         run: |
-          # Convert components input (JSON array format)
-          components_json=$(echo '${{ inputs.component }}' | jq -c '.[]' | awk '{printf "[{\"name\":\"%s\"}]", $0}')
+          # Convert components to JSON array of objects
+          components_json=$(echo '${{ inputs.component }}' | jq -R -s 'split(",") | map({"name": .})')
           echo "components=$components_json" >> $GITHUB_ENV
 
           # Add labels by prefixing with "port-"
-          labels_json=$(echo '${{ inputs.component }}' | jq -r '.[]' | sed 's/^/port-/' | jq -c -R -s 'split("\n")[:-1]')
+          labels_json=$(echo '${{ inputs.component }}' | jq -R -s 'split(",") | map("port-" + .)')
           echo "labels=$labels_json" >> $GITHUB_ENV
 
       - name: Debug Transformed Data
