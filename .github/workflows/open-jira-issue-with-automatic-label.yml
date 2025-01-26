@@ -30,7 +30,7 @@ jobs:
         id: transform
         run: |
           # Convert comma-separated labels into JSON array
-          labels_json=$(echo "${{ inputs.labels }}" | sed 's/,/","/g' | sed 's/^/["/' | sed 's/$/"]/')
+          labels_json=$(echo "${{ inputs.component }}" | sed 's/,/","/g' | sed 's/^/["/' | sed 's/$/"]/')
           echo "labels=$labels_json" >> $GITHUB_ENV
 
           # Convert comma-separated components into JSON array of objects
