@@ -38,7 +38,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: PORT
-          issuetype: TASK
+          issuetype: Bug
           summary: ${{ inputs.short_title }}
           fields: |
             ${{ fromJson(inputs.port_context).entity != null
