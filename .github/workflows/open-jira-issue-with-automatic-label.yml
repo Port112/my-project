@@ -29,9 +29,13 @@ jobs:
       - name: Transform Inputs to JSON
         id: transform
         run: |
-          # Convert comma-separated inputs to JSON
-          echo "labels=$(echo '[\"${{ inputs.components }}\"]' | sed 's/,/","/g')" >> $GITHUB_ENV
-          echo "components=$(echo '[{\"name\":\"'${{ inputs.components }}'\"}]' | sed 's/,/\"},{\"name\":\"/g')" >> $GITHUB_ENV
+          # Convert comma-separated labels into JSON array
+          labels_json=$(echo "${{ inputs.labels }}" | sed 's/,/","/g' | sed 's/^/["/' | sed 's/$/"]/')
+          echo "labels=$labels_json" >> $GITHUB_ENV
+
+          # Convert comma-separated components into JSON array of objects
+          components_json=$(echo "${{ inputs.components }}" | sed 's/,/","/g' | sed 's/^/{"name":"/' | sed 's/$/"}]/' | sed 's/","/"},{"name":"&/g')
+          echo "components=$components_json" >> $GITHUB_ENV
 
       - name: Debug Transformed Data
         run: |
