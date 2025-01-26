@@ -32,15 +32,13 @@ jobs:
       - name: Transform Inputs to JSON
         id: transform
         run: |
-          # Transform labels to JSON with "port-" prefix
-          labels_input="${{ inputs.component }}"
-          labels_json=$(echo "$labels_input" | awk -F',' '{printf "["; for (i=1; i<=NF; i++) printf "\"port-%s\"%s", $i, (i==NF ? "" : ","); printf "]"}')
-          echo "labels=$labels_json" >> $GITHUB_ENV
-
-          # Convert components to JSON array of objects
-          components_input="${{ inputs.component }}"
-          components_json=$(echo "$components_input" | awk -F',' '{printf "["; for (i=1; i<=NF; i++) if ($i != "") printf "{\"name\":\"%s\"}%s", $i, (i==NF ? "" : ","); printf "]"}')
+          # Convert components input (JSON array format)
+          components_json=$(echo '${{ inputs.component }}' | jq -c '.[]' | awk '{printf "[{\"name\":\"%s\"}]", $0}')
           echo "components=$components_json" >> $GITHUB_ENV
+
+          # Add labels by prefixing with "port-"
+          labels_json=$(echo '${{ inputs.component }}' | jq -r '.[]' | sed 's/^/port-/' | jq -c -R -s 'split("\n")[:-1]')
+          echo "labels=$labels_json" >> $GITHUB_ENV
 
       - name: Debug Transformed Data
         run: |
