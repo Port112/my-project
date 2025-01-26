@@ -26,6 +26,18 @@ jobs:
           JIRA_USER_EMAIL: ${{ secrets.ATLASSIANUSEREMAIL }}
           JIRA_API_TOKEN: ${{ secrets.ATLASSIANUSERTOKEN }}
 
+      - name: Transform Inputs to JSON
+        id: transform
+        run: |
+          # Convert comma-separated inputs to JSON
+          echo "labels=$(echo '[\"${{ inputs.labels }}\"]' | sed 's/,/","/g')" >> $GITHUB_ENV
+          echo "components=$(echo '[{\"name\":\"'${{ inputs.components }}'\"}]' | sed 's/,/\"},{\"name\":\"/g')" >> $GITHUB_ENV
+
+      - name: Debug Transformed Data
+        run: |
+          echo "Labels: ${{ env.labels }}"
+          echo "Components: ${{ env.components }}"
+
       - name: Log start of Jira issue creation
         uses: port-labs/port-github-action@v1
         with:
@@ -45,8 +57,8 @@ jobs:
           summary: ${{ inputs.short_title }}
           fields: |
             {
-              "labels": ${{ toJSON(inputs.labels.split(',')) }},
-              "components": ${{ toJSON(inputs.components.split(',').map(c => { "name": c })) }}
+              "labels": ${{ env.labels }},
+              "components": ${{ env.components }}
             }
     
       - name: Log issue creation
