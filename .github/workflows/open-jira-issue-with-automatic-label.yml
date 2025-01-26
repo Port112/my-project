@@ -37,9 +37,9 @@ jobs:
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          project: ${{ inputs.project }}
-          issuetype: ${{ inputs.type }}
-          summary: ${{ inputs.title }}
+          project: PORT
+          issuetype: TASK
+          summary: ${{ inputs.short_title }}
           fields: |
             ${{ fromJson(inputs.port_context).entity != null
               && format('{{ "labels": ["port-{0}"] }}', fromJson(inputs.port_context).entity)
