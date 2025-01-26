@@ -34,7 +34,7 @@ jobs:
           echo "labels=$labels_json" >> $GITHUB_ENV
 
           # Convert comma-separated components into JSON array of objects
-          components_json=$(echo "${{ inputs.component }}" | sed 's/,/","/g' | sed 's/^/{"name":"/' | sed 's/$/"}]/' | sed 's/","/"},{"name":"&/g')
+          components_json=$(echo "$components_input" | awk -F',' '{printf "["; for (i=1; i<=NF; i++) if ($i != "") printf "{\"name\":\"%s\"}%s", $i, (i==NF ? "" : ","); printf "]"}')
           echo "components=$components_json" >> $GITHUB_ENV
 
       - name: Debug Transformed Data
