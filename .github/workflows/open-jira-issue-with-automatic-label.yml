@@ -44,10 +44,10 @@ jobs:
           issuetype: Bug
           summary: ${{ inputs.short_title }}
           fields: |
-            {{
-              "labels": ${{ fromJson('["' + inputs.components.split(',').join('","') + '"]') }},
-              "components": ${{ fromJson('[' + inputs.components.split(',').map(c => '{"name":"' + c + '"}').join(',') + ']') }}
-            }}
+            {
+              "labels": ${{ toJSON(inputs.labels.split(',')) }},
+              "components": ${{ toJSON(inputs.components.split(',').map(c => { "name": c })) }}
+            }
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
