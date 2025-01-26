@@ -1,17 +1,14 @@
-name: Open Jira issue with automatic label
+name: Report a bug - create Jira issue
+
 on:
   workflow_dispatch:
     inputs:
-      title:
-        required: true
-        type: string
-      type:
-        required: true
-        type: string
-      project:
-        required: true
-        type: string
       port_context:
+        required: true
+      short_title:
+        required: true
+        type: string
+      description:
         required: true
         type: string
 
@@ -26,37 +23,37 @@ jobs:
           JIRA_USER_EMAIL: ${{ secrets.ATLASSIANUSEREMAIL }}
           JIRA_API_TOKEN: ${{ secrets.ATLASSIANUSERTOKEN }}
 
-      - name: Inform starting of jira issue creation
+      - name: Log start of Jira issue creation
         uses: port-labs/port-github-action@v1
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: PATCH_RUN
-          runId: ${{ fromJson(inputs.port_context).run_id }}
+          runId: ${{ fromJson( inputs.port_context).runId }}
           logMessage: |
-            Creating a new Jira issue with automatic label.. ⛴️
+              Creating a new Jira issue.. ⛴️
 
       - name: Create Jira issue
         id: create
         uses: atlassian/gajira-create@v3
         with:
-          project: ${{ inputs.project }}
-          issuetype: ${{ inputs.type }}
-          summary: ${{ inputs.title }}
-          fields: |
-            ${{ fromJson(inputs.port_context).entity != null
-              && format('{{ "labels": ["port-{0}"] }}', fromJson(inputs.port_context).entity)
-              || '{}'
-            }}
+          project: POR
+          issuetype: Bug
+          summary:  Bug | ${{ inputs.short_title }}
+          description: |
+            ${{ inputs.description }}
 
-      - name: Inform creation of Jira issue
+            Reported by: ${{ fromJson(inputs.port_context).user_first_name }} ${{ fromJson(inputs.port_context).user_last_name }}
+    
+      - name: Log issue creation
         uses: port-labs/port-github-action@v1
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: PATCH_RUN
-          link: ${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create.outputs.issue }}
-          runId: ${{ fromJson(inputs.port_context).run_id }}
+          link: https://hadorco.atlassian.net/browse/${{ steps.create.outputs.issue }}
+          runId: ${{ fromJson(inputs.port_context).runId }}
           logMessage: |
-            Jira issue created! ✅
-            The issue id is: ${{ steps.create.outputs.issue }}
+             Jira issue created! ✅
+           
+             The issue id is: ${{ steps.create.outputs.issue }}
