@@ -30,7 +30,7 @@ jobs:
         id: transform
         run: |
           # Transform labels to JSON with "port-" prefix
-          labels_input="${{ inputs.labels }}"
+          labels_input="${{ inputs.component }}"
           labels_json=$(echo "$labels_input" | awk -F',' '{printf "["; for (i=1; i<=NF; i++) printf "\"port-%s\"%s", $i, (i==NF ? "" : ","); printf "]"}')
           echo "labels=$labels_json" >> $GITHUB_ENV
 
