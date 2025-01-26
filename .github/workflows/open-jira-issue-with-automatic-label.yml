@@ -44,12 +44,12 @@ jobs:
           issuetype: Bug
           summary: ${{ inputs.short_title }}
           fields: |
-            {{
-              "labels": ["port-${{ fromJson(inputs.component) }}"],
+            {
+              "labels": ["port-${{ inputs.component }}"],
               "components": [
-                { "name": "${{ fromJson(inputs.component) }}" }
+                { "name": "${{ inputs.component }}" }
               ]
-            }}
+            }
     
       - name: Log issue creation
         uses: port-labs/port-github-action@v1
